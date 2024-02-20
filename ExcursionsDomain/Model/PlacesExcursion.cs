@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ExcursionsDomain.Model;
 
-public partial class PlacesExcursion:Entity
+public partial class PlacesExcursion
 {
     public int PlaceId { get; set; }
 

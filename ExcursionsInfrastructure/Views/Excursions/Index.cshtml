@@ -1,0 +1,60 @@
+﻿@model IEnumerable<ExcursionsDomain.Model.Excursion>
+
+@{
+    ViewData["Title"] = "Екскурсії";
+}
+
+<h1>Екскурсії та тури</h1>
+
+<p>
+    <a asp-action="Create">Додати екскурсію</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                Місця відвідування
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Duration)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td style="max-width: 250px;">
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                    <p>Дата: @item.Date.ToString("dd.MM.yyyy")</p>
+                    <p>Час: @item.Date.ToString("HH:mm")</p>
+            </td>
+            <td style="max-width: 300px;">
+                    @Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price) грн/чол
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Duration) год
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Докладніше</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

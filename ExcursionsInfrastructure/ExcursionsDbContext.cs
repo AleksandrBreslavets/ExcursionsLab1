@@ -27,7 +27,6 @@ public partial class ExcursionsDbContext : DbContext
 
     public virtual DbSet<Place> Places { get; set; }
 
-    public virtual DbSet<PlacesExcursion> PlacesExcursions { get; set; }
 
     public virtual DbSet<Visitor> Visitors { get; set; }
 
@@ -90,22 +89,25 @@ public partial class ExcursionsDbContext : DbContext
                 .HasForeignKey(d => d.CityId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Places_Cities");
+
+            entity.HasMany(d => d.Excursions).WithMany(p => p.Places)
+               .UsingEntity<Dictionary<string, object>>(
+                   "PlacesExcursion",
+                   r => r.HasOne<Excursion>().WithMany()
+                       .HasForeignKey("ExcursionId")
+                       .OnDelete(DeleteBehavior.ClientSetNull)
+                       .HasConstraintName("FK_PlacesExcursions_Excursions"),
+                   l => l.HasOne<Place>().WithMany()
+                       .HasForeignKey("PlaceId")
+                       .OnDelete(DeleteBehavior.ClientSetNull)
+                       .HasConstraintName("FK_PlacesExcursions_Places"),
+                   j =>
+                   {
+                       j.HasKey("PlaceId", "ExcursionId");
+                       j.ToTable("PlacesExcursions");
+                   });
         });
-
-        modelBuilder.Entity<PlacesExcursion>(entity =>
-        {
-            entity.HasKey(e => new { e.PlaceId, e.ExcursionId });
-
-            entity.HasOne(d => d.Excursion).WithMany(p => p.PlacesExcursions)
-                .HasForeignKey(d => d.ExcursionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_PlacesExcursions_Excursions");
-
-            entity.HasOne(d => d.Place).WithMany(p => p.PlacesExcursions)
-                .HasForeignKey(d => d.PlaceId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_PlacesExcursions_Places");
-        });
+   
 
         modelBuilder.Entity<Visitor>(entity =>
         {

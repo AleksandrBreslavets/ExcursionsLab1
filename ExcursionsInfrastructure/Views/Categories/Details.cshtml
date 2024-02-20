@@ -1,0 +1,66 @@
+﻿@model ExcursionsDomain.Model.Category
+
+@{
+    ViewData["Title"] = @Model.Name;
+}
+
+<h1 class="display-4">@Model.Name</h1>
+
+<div>
+    <h4>Екскурсії за цією категорією</h4>
+    <hr />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Назва
+                </th>
+                <th>
+                    Час проведення
+                </th>
+                <th>
+                    Місця відвідування
+                </th>
+                <th>
+                    Ціна 
+                </th>
+                <th>
+                    Тривалість
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Excursions)
+            {
+                <tr>
+                    <td style="max-width: 250px;">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <p>Дата: @item.Date.ToString("dd.MM.yyyy")</p>
+                        <p>Час: @item.Date.ToString("HH:mm")</p>
+                    </td>
+                    <td style="max-width: 300px;">
+                        @Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price) грн/чол
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Duration) год
+                    </td>
+                    <td>
+                        @Html.ActionLink("Редагувати", "Edit", "Excursions", new { id = item.Id}) |
+                        @Html.ActionLink("Докладніше", "Details", "Excursions", new { id = item.Id }) |
+                        @Html.ActionLink("Видалити", "Delete", "Excursions", new { id = item.Id })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> |
+    <a asp-action="Index">До всіх категорій</a>
+</div>

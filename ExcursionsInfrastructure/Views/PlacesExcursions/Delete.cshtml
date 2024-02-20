@@ -1,0 +1,40 @@
+﻿@model ExcursionsDomain.Model.PlacesExcursion
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>PlacesExcursion</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.OrderNumber)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.OrderNumber)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Excursion)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Excursion.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Place)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Place.Adress)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="PlaceId" />
+        <input type="hidden" asp-for="ExcursionId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

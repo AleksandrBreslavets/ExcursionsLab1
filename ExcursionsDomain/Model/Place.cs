@@ -17,5 +17,5 @@ public partial class Place:Entity
 
     public virtual City City { get; set; } = null!;
 
-    public virtual ICollection<PlacesExcursion> PlacesExcursions { get; set; } = new List<PlacesExcursion>();
+    public virtual ICollection<Excursion> Excursions { get; set; } = new List<Excursion>();
 }
