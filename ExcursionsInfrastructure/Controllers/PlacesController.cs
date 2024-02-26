@@ -59,6 +59,11 @@ namespace ExcursionsInfrastructure.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Adress,CoordinateX,CoordinateY,CityId,Id")] Place place)
         {
+            City c = _context.Cities.Include(c=>c.Country).FirstOrDefault(c => c.Id == place.CityId);
+            place.City = c;
+            ModelState.Clear();
+            TryValidateModel(place);
+
             if (ModelState.IsValid)
             {
                 _context.Add(place);
@@ -97,6 +102,11 @@ namespace ExcursionsInfrastructure.Controllers
             {
                 return NotFound();
             }
+
+            City c = _context.Cities.Include(c => c.Country).FirstOrDefault(c => c.Id == place.CityId);
+            place.City = c;
+            ModelState.Clear();
+            TryValidateModel(place);
 
             if (ModelState.IsValid)
             {

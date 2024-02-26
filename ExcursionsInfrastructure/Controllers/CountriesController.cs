@@ -40,6 +40,10 @@ namespace ExcursionsInfrastructure.Controllers
                 return NotFound();
             }
 
+            await _context.Countries
+                 .Include(c => c.Cities)
+                 .ToListAsync();
+
             return View(country);
         }
 

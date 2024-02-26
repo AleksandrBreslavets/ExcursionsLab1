@@ -1,13 +1,12 @@
 ﻿@model ExcursionsDomain.Model.Place
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Редагування";
 }
 
-<h1>Edit</h1>
-
-<h4>Place</h4>
+<h1>Редагування місця проведення</h1>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
@@ -39,14 +38,14 @@
             </div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Зберегти" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">До всіх місць проведення</a>
 </div>
 
 @section Scripts {

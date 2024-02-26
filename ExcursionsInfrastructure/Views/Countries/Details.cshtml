@@ -1,24 +1,49 @@
 ﻿@model ExcursionsDomain.Model.Country
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = @Model.Name;
 }
 
-<h1>Details</h1>
+<h1 class="display-4">@Model.Name</h1>
+<hr />
+@if (Model.Cities.Any())
+{
+    <div>
+        <h4>Міста цієї країни:</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Місто
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Cities)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+
+                        <td>
+                            @Html.ActionLink("Редагувати", "Edit", "Cities", new { id = item.Id }) |
+                            @Html.ActionLink("Докладніше", "Details", "Cities", new { id = item.Id }) |
+                            @Html.ActionLink("Видалити", "Delete", "Cities", new { id = item.Id })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>       
+}
+
+@if (!Model.Cities.Any())
+{
+    <p>Жодне місто не належить до цієї країни.</p>
+}
 
 <div>
-    <h4>Country</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> |
+    <a asp-action="Index">До всіх країн</a>
 </div>

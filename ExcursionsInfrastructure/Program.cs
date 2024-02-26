@@ -1,5 +1,7 @@
 using ExcursionsInfrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ExcursionsDbContext>(option => option.UseSqlServer(
     builder.Configuration.GetConnectionString("DefaultConnection")
     ));
-
-
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

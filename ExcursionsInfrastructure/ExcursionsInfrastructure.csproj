@@ -2,14 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
+	  <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NewFolder\**" />
     <Compile Remove="Views\PlacesExcursions\**" />
+    <Content Remove="NewFolder\**" />
     <Content Remove="Views\PlacesExcursions\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
     <EmbeddedResource Remove="Views\PlacesExcursions\**" />
+    <None Remove="NewFolder\**" />
     <None Remove="Views\PlacesExcursions\**" />
   </ItemGroup>
 
@@ -36,6 +40,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ExcursionsDomain\ExcursionsDomain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\NewFolder\" />
   </ItemGroup>
 
 </Project>

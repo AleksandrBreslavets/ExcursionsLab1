@@ -20,3 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+.block-label {
+    display: block;
+    margin-bottom: 5px; /* Расстояние между метками и селектами */
+}

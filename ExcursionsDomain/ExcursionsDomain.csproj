@@ -7,6 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helpers\**" />
+    <EmbeddedResource Remove="Helpers\**" />
+    <None Remove="Helpers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="CustomValidation.cs" />
+    <Compile Remove="Model\NullableDoubleModelBinder.cs" />
     <Compile Remove="Model\PlacesExcursion.cs" />
   </ItemGroup>
 

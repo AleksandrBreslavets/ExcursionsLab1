@@ -1,65 +1,82 @@
 ﻿@model ExcursionsDomain.Model.Category
-
+@using ExcursionsDomain.Model
 @{
     ViewData["Title"] = @Model.Name;
 }
 
 <h1 class="display-4">@Model.Name</h1>
+<hr />
 
-<div>
-    <h4>Екскурсії за цією категорією</h4>
-    <hr />
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    Назва
-                </th>
-                <th>
-                    Час проведення
-                </th>
-                <th>
-                    Місця відвідування
-                </th>
-                <th>
-                    Ціна 
-                </th>
-                <th>
-                    Тривалість
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Excursions)
-            {
+@if (Model.Excursions.Any())
+{
+    <div>
+        <h4>Екскурсії за цією категорією:</h4>
+        <table class="table">
+            <thead>
                 <tr>
-                    <td style="max-width: 250px;">
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        <p>Дата: @item.Date.ToString("dd.MM.yyyy")</p>
-                        <p>Час: @item.Date.ToString("HH:mm")</p>
-                    </td>
-                    <td style="max-width: 300px;">
-                        @Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Price) грн/чол
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Duration) год
-                    </td>
-                    <td>
-                        @Html.ActionLink("Редагувати", "Edit", "Excursions", new { id = item.Id}) |
-                        @Html.ActionLink("Докладніше", "Details", "Excursions", new { id = item.Id }) |
-                        @Html.ActionLink("Видалити", "Delete", "Excursions", new { id = item.Id })
-                    </td>
+                    <th>
+                        Назва
+                    </th>
+                    <th>
+                        Час проведення
+                    </th>
+                    <th>
+                        Місця відвідування
+                    </th>
+                    <th>
+                        Ціна
+                    </th>
+                    <th>
+                        Тривалість
+                    </th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Excursions)
+                {
+                    <tr>
+                        <td style="max-width: 250px;">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            <p>Дата: @item.Date.ToString("dd.MM.yyyy")</p>
+                            <p>Час: @item.Date.ToString("HH:mm")</p>
+                        </td>
+                        <td style="max-width: 300px;">
+                            @Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Price) грн/чол
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Duration) год
+                        </td>
+                        <td>
+                            @if (((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                            {
+                                @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = item.Id })
+                            }
+                            @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                            {
+                                @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = item.Id })
+                            } |
+                            @Html.ActionLink("Редагувати", "Edit", "Excursions", new { id = item.Id }) |
+                            @Html.ActionLink("Докладніше", "Details", "Excursions", new { id = item.Id }) |
+                            @Html.ActionLink("Видалити", "Delete", "Excursions", new { id = item.Id })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (!Model.Excursions.Any())
+{
+    <p>Немає екскурсій за цією категорією.</p>
+}
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> |
     <a asp-action="Index">До всіх категорій</a>

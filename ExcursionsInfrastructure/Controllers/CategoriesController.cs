@@ -45,6 +45,8 @@ namespace ExcursionsInfrastructure.Controllers
                  .ThenInclude(pl=>pl.Places)
                  .ToListAsync();
 
+            ViewData["Visitor"] = _context.Visitors.Include(v => v.Excursions).FirstOrDefault(v => v.Id == 3);
+
             return View(category);
             //return RedirectToAction("Index", "Excursions", new {id=category.Id});
         }

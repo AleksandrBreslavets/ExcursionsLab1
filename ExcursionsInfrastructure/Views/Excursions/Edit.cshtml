@@ -1,13 +1,17 @@
 ﻿@model ExcursionsDomain.Model.Excursion
 
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Редагування";
 }
 
-<h1>Edit</h1>
-
-<h4>Excursion</h4>
+<h1>Редагування екскурсії</h1>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
@@ -42,17 +46,56 @@
                 <input asp-for="Duration" class="form-control" />
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <label asp-for="Categories" class="control-label"></label>
+                <select asp-for="Categories"
+                        class="selectpicker form-control s_cat"
+                        multiple
+                        data-size="5"
+                        data-live-search="true"
+                        asp-items="ViewBag.Categories"
+                        title="Оберіть категорії..."></select>
+                <span asp-validation-for="Categories" class="text-danger"></span>
+                @Html.ActionLink("Додати категорію", "Create", "Categories")
+            </div>
+            <div class="form-group">
+                <label asp-for="Places" class="control-label"></label>
+                <select asp-for="Places"
+                        class="selectpicker form-control s_pl"
+                        multiple
+                        data-size="5"
+                        data-live-search="true"
+                        asp-items="ViewBag.Places"
+                        title="Оберіть місця проведення..."></select>
+                <span asp-validation-for="Places" class="text-danger"></span>
+                @Html.ActionLink("Додати місце проведення", "Create", "Places")
+            </div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Зберегти" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">До всіх екскурсій</a>
 </div>
+
+<script>
+    $('select').selectpicker();
+</script>
+
+<script>
+    var selectedCategories = @Html.Raw(Json.Serialize(ViewData["SelectedCategories"]));
+    var selectedPlaces = @Html.Raw(Json.Serialize(ViewData["SelectedPlaces"]));
+
+    $(document).ready(function () {
+        $(".s_cat").selectpicker('val', selectedCategories);
+        $(".s_pl").selectpicker('val', selectedPlaces);
+    });
+
+</script>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

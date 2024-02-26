@@ -1,13 +1,12 @@
 ﻿@model ExcursionsDomain.Model.Place
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Створення";
 }
 
-<h1>Create</h1>
-
-<h4>Place</h4>
+<h1>Створення місця проведення</h1>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
@@ -34,17 +33,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="CityId" class="control-label"></label>
-                <select asp-for="CityId" class ="form-control" asp-items="ViewBag.CityId"></select>
+                <select asp-for="CityId" class ="form-control" asp-items="ViewBag.CityId" name="cityId"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Створити" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">До всіх місць проведення</a>
 </div>
 
 @section Scripts {

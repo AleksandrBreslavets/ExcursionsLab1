@@ -34,6 +34,8 @@ namespace ExcursionsInfrastructure.Controllers
             }
 
             var visitor = await _context.Visitors
+                .Include(v=>v.Excursions)
+                .ThenInclude(pl => pl.Places)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (visitor == null)
             {
@@ -152,6 +154,54 @@ namespace ExcursionsInfrastructure.Controllers
         private bool VisitorExists(int id)
         {
             return _context.Visitors.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> AddExcursion(int excur_id)
+        {
+            int visitor_id = 3;
+            var visitor = _context.Visitors.Include(v=>v.Excursions).FirstOrDefault(v => v.Id == visitor_id);
+            
+
+            if (visitor == null)
+            {
+                return NotFound();
+            }
+
+            var excursion = _context.Excursions.FirstOrDefault(e => e.Id == excur_id);
+
+            if (excursion == null)
+            {
+                return NotFound();
+            }
+
+            visitor.Excursions.Add(excursion);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Excursions");
+        }
+
+        public async Task<IActionResult> DeleteExcursion(int excur_id)
+        {
+            int visitor_id = 3;
+            var visitor = _context.Visitors.Include(v => v.Excursions).FirstOrDefault(v => v.Id == visitor_id);
+
+
+            if (visitor == null)
+            {
+                return NotFound();
+            }
+
+            var excursion = _context.Excursions.FirstOrDefault(e => e.Id == excur_id);
+
+            if (excursion == null)
+            {
+                return NotFound();
+            }
+
+            visitor.Excursions.Remove(excursion);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Excursions");
         }
     }
 }

@@ -1,4 +1,7 @@
 ﻿@model ExcursionsDomain.Model.Excursion
+@using ExcursionsDomain.Model
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 @{
     ViewData["Title"] = Model.Name;
@@ -52,7 +55,7 @@
             Міста
         </dt>
         <dd class="col-sm-10">
-            @Html.Raw(string.Join(", ",Model.Places.Select(p => p.City.Name)))
+            @Html.Raw(string.Join(", ",Model.Places.Select(p => p.City.Name).Distinct()))
         </dd>
         <dt class="col-sm-2">
             План відвідувань
@@ -63,7 +66,36 @@
         </dd>
     </dl>
 </div>
+<h2>Маршрут екскурсії на карті</h2>
+<div id="map" style="height: 500px; width: 100%;"></div>
+
+
+<script>
+    var map = L.map('map').setView([50.450441, 30.52355], 4); 
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+    }).addTo(map);
+ 
+    @foreach (var place in Model.Places)
+    {
+        <text>
+             var marker = L.marker([@place.CoordinateX, @place.CoordinateY]).addTo(map);
+             marker.bindPopup("@place.Name");
+        </text>
+    }
+</script>
 <div>
+    @if (((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == Model.Id))
+    {
+        @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = Model.Id })
+    }
+    @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == Model.Id))
+    {
+        @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = Model.Id })
+    } |
     <a asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> |
     <a asp-action="Index">До всіх екскурсій</a>
 </div>
+
+  

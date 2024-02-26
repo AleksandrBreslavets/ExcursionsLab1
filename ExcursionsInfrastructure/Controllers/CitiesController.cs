@@ -42,6 +42,10 @@ namespace ExcursionsInfrastructure.Controllers
                 return NotFound();
             }
 
+            await _context.Cities
+                 .Include(c => c.Places)
+                 .ToListAsync();
+
             return View(city);
         }
 
@@ -59,6 +63,11 @@ namespace ExcursionsInfrastructure.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,CountryId,Id")] City city)
         {
+            Country c= _context.Countries.FirstOrDefault(c => c.Id == city.CountryId);
+            city.Country = c;
+            ModelState.Clear();
+            TryValidateModel(city);
+
             if (ModelState.IsValid)
             {
                 _context.Add(city);
@@ -97,6 +106,11 @@ namespace ExcursionsInfrastructure.Controllers
             {
                 return NotFound();
             }
+
+            Country c = _context.Countries.FirstOrDefault(c => c.Id == city.CountryId);
+            city.Country = c;
+            ModelState.Clear();
+            TryValidateModel(city);
 
             if (ModelState.IsValid)
             {

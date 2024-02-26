@@ -1,21 +1,15 @@
 ﻿@model ExcursionsDomain.Model.City
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = @Model.Name;
 }
 
-<h1>Details</h1>
+<h1 class="display-4">@Model.Name</h1>
+<hr />
 
 <div>
-    <h4>City</h4>
-    <hr />
+    
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Country)
         </dt>
@@ -24,7 +18,62 @@
         </dd>
     </dl>
 </div>
+<hr />
+@if (Model.Places.Any())
+{
+    <div>
+        <h4>Місця проведення екскурсій в цьому місті:</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Місце
+                    </th>
+                    <th>
+                        Адреса
+                    </th>
+                    <th>
+                        Координата X
+                    </th>
+                    <th>
+                        Координата Y
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Places)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Adress)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CoordinateX)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CoordinateY)
+                        </td>
+                        <td>
+                            @Html.ActionLink("Редагувати", "Edit", "Places", new { id = item.Id }) |
+                            @Html.ActionLink("Докладніше", "Details", "Places", new { id = item.Id }) |
+                            @Html.ActionLink("Видалити", "Delete", "Places", new { id = item.Id })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@if (!Model.Places.Any())
+{
+    <p>В місті немає жодного місця проведення екскурсій.</p>
+}
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> |
+    <a asp-action="Index">До всіх міст</a>
 </div>

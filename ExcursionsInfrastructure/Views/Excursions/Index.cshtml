@@ -1,4 +1,10 @@
 ﻿@model IEnumerable<ExcursionsDomain.Model.Excursion>
+@using ExcursionsDomain.Model
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
 @{
     ViewData["Title"] = "Екскурсії";
@@ -9,52 +15,195 @@
 <p>
     <a asp-action="Create">Додати екскурсію</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
-            </th>
-            <th>
-                Місця відвідування
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Duration)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td style="max-width: 250px;">
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                    <p>Дата: @item.Date.ToString("dd.MM.yyyy")</p>
-                    <p>Час: @item.Date.ToString("HH:mm")</p>
-            </td>
-            <td style="max-width: 300px;">
-                    @Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price) грн/чол
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Duration) год
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Докладніше</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
-            </td>
-        </tr>
+
+<form asp-action="Filter">
+    <div>
+        <label for="nameFilter">Назва:</label>
+        <input type="text" id="nameFilter" name="nameFilter">
+    </div>
+    <div class="form-group">
+        <label for="categoryFilter" class="control-label">Категорії:</label>
+        <select class="selectpicker s1"
+                data-size="5"
+                multiple
+                data-live-search="true"
+                asp-items="ViewBag.Categories"
+                title="Оберіть категорії..."
+                name="selectedCategories"></select>
+    </div>
+    <div class="form-group">
+        <label for="placeFilter" class="control-label">Місця проведення:</label>
+        <select class="selectpicker s2"
+                data-size="5"
+                multiple
+                data-live-search="true"
+                asp-items="ViewBag.Places"
+                title="Оберіть місця проведення..."
+                name="selectedPlaces"></select>
+    </div>
+    <div class="form-group">
+        <label for="cityFilter" class="control-label">Міста:</label>
+        <select class="selectpicker s3"
+                data-size="5"
+                multiple
+                data-live-search="true"
+                asp-items="ViewBag.Cities"
+                title="Оберіть міста..."
+                name="selectedCities"></select>
+    </div>
+    <div class="form-group">
+        <label for="countryFilter" class="control-label">Країни:</label>
+        <select class="selectpicker s4"
+                data-size="5"
+                multiple
+                data-live-search="true"
+                asp-items="ViewBag.Countries"
+                title="Оберіть країни..."
+                name="selectedCountries"></select>
+    </div>
+    <div class="form-group">
+        <label for="countryFilter" class="control-label">Ціновий діапазон:</label>
+        <select class="selectpicker s5"
+                data-size="5"
+                data-live-search="true"
+                asp-items="ViewBag.Prices"
+                title="Оберіть ціновий діапазон..."
+                name="selectedPrices"></select>
+    </div>
+    <div class="form-group">
+        <label class="control-label">Тривалість:
+        <select class="selectpicker s6"
+                title="Оберіть ціновий діапазон..."
+                name="selectedDuration">
+            <option value="1">Короткотривалі (0-5 годин)</option>
+            <option value="2">Одноденні (6-24 годин)</option>
+            <option value="3">Багатоденні (більше 24 годин)</option>
+        </select>
+        </label>
+    </div>
+    <div class="form-group">
+        <label class="control-label">
+            Кількість людей:
+            <select class="selectpicker s7"
+                    title="Оберіть кількість людей..."
+                    name="selectedPeopleAm">
+                <option value="1">Малі групи (1-10 чоловік)</option>
+                <option value="2">Середні групи (11-40 чоловік)</option>
+                <option value="3">Великі групи (більше 40 чоловік)</option>
+            </select>
+        </label>
+    </div>
+    <div>
+        <label for="dateFilter">Дата проведення:</label>
+        <input type="date" id="dateFilter" name="dateFilter">
+    </div>
+    <button type="submit">Пошук</button>
+    <button type="button" onclick="clearSearch();">Очистити</button>
+</form>
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Date)
+                </th>
+                <th>
+                    Місця відвідування
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Duration)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="max-width: 250px;">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        <p>Дата: @item.Date.ToString("dd.MM.yyyy")</p>
+                        <p>Час: @item.Date.ToString("HH:mm")</p>
+                    </td>
+                    <td style="max-width: 300px;">
+                        @Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price) грн/чол
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Duration) год
+                    </td>
+                    <td>
+                        @if (((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                        {
+                            @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = item.Id })
+                        }
+                        @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                        {
+                            @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = item.Id })
+                        } |
+                        <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Докладніше</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a> 
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
-    </tbody>
-</table>
+
+@if (!Model.Any())
+{
+    <p>Екскурсій немає.</p>
+}
+<script>
+    var setSelectValues = (selectNames, selectClass) => {
+        var urlParams = new URLSearchParams(window.location.search);
+        var selectedValues = urlParams.getAll(selectNames);
+        $(selectClass).selectpicker('val', selectedValues);
+    }
+    var urlParams = new URLSearchParams(window.location.search);
+    var selectedName = urlParams.get('nameFilter');
+
+    const dateString = urlParams.get('dateFilter');
+
+    if(dateString){
+        const date = new Date(decodeURIComponent(dateString));
+        date.setHours(23);
+        const formattedDate = date.toISOString().split('T')[0];
+        $('#dateFilter').val(formattedDate);
+    }
+    
+    
+
+    $('#nameFilter').val(selectedName);
+
+    setSelectValues('selectedCategories', '.s1');
+    setSelectValues('selectedPlaces', '.s2');
+    setSelectValues('selectedCities', '.s3');
+    setSelectValues('selectedCountries', '.s4');
+    setSelectValues('selectedPrices', '.s5');
+    setSelectValues('selectedDuration', '.s6');
+    setSelectValues('selectedPeopleAm', '.s7');
+
+
+</script>
+
+
+<script>
+        var clearSearch = () => {
+        $('#nameFilter').val('');
+        $('#dateFilter').val('');
+        $(".selectpicker").val('').trigger('change');
+    }
+</script>
