@@ -7,43 +7,34 @@
 <hr />
 @if (Model.Cities.Any())
 {
-    <div>
-        <h4>Міста цієї країни:</h4>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        Місто
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Cities)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
+    <h4 class="cat-details-header">Міста цієї країни:</h4>
+    <div class="cat-container">
+        @foreach (var item in Model.Cities.OrderBy(c => c.Name))
+        {
+            <div class="card border-dark" style="width:100%">
+                <div class="card-body card-cat-inner">
+                    <div>
+                        <h4 class="card-title">@item.Name</h4>
+                        <p class="card-text">Країна: @item.Country.Name</p>
+                    </div>
 
-                        <td>
-                            @Html.ActionLink("Редагувати", "Edit", "Cities", new { id = item.Id }) |
-                            @Html.ActionLink("Докладніше", "Details", "Cities", new { id = item.Id }) |
-                            @Html.ActionLink("Видалити", "Delete", "Cities", new { id = item.Id })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>       
+                    <div class="card-cat-btns">
+                        @Html.ActionLink("Докладніше", "Details", "Cities", new { id = item.Id }, new { @class = "btn btn-outline-info" })
+                        @Html.ActionLink("Редагувати", "Edit", "Cities", new { id = item.Id }, new { @class = "btn btn-outline-warning" })
+                        @Html.ActionLink("Видалити", "Delete", "Cities", new { id = item.Id }, new { @class = "btn btn-outline-danger" })
+                    </div>
+                </div>
+            </div>
+        }
+    </div>      
 }
 
 @if (!Model.Cities.Any())
 {
-    <p>Жодне місто не належить до цієї країни.</p>
+    <h5>Жодне місто не належить до цієї країни.</h5>
 }
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> |
-    <a asp-action="Index">До всіх країн</a>
+<div class="cat-details-btns">
+    <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a>
+    <a class="btn btn-outline-info" asp-action="Index">До всіх країн</a>
 </div>

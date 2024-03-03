@@ -48,7 +48,7 @@ namespace ExcursionsInfrastructure.Controllers
         // GET: Places/Create
         public IActionResult Create()
         {
-            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name");
+            ViewData["CityId"] = new SelectList(_context.Cities.OrderBy(c => c.Name), "Id", "Name");
             return View();
         }
 
@@ -70,7 +70,7 @@ namespace ExcursionsInfrastructure.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name", place.CityId);
+            ViewData["CityId"] = new SelectList(_context.Cities.OrderBy(c=>c.Name), "Id", "Name", place.CityId);
             return View(place);
         }
 
@@ -87,7 +87,7 @@ namespace ExcursionsInfrastructure.Controllers
             {
                 return NotFound();
             }
-            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name", place.CityId);
+            ViewData["CityId"] = new SelectList(_context.Cities.OrderBy(c => c.Name), "Id", "Name", place.CityId);
             return View(place);
         }
 
@@ -128,7 +128,7 @@ namespace ExcursionsInfrastructure.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Name", place.CityId);
+            ViewData["CityId"] = new SelectList(_context.Cities.OrderBy(c => c.Name), "Id", "Name", place.CityId);
             return View(place);
         }
 

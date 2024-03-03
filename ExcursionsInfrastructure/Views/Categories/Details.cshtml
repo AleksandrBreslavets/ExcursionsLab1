@@ -4,80 +4,64 @@
     ViewData["Title"] = @Model.Name;
 }
 
+
 <h1 class="display-4">@Model.Name</h1>
+
 <hr />
 
 @if (Model.Excursions.Any())
 {
     <div>
-        <h4>Екскурсії за цією категорією:</h4>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        Назва
-                    </th>
-                    <th>
-                        Час проведення
-                    </th>
-                    <th>
-                        Місця відвідування
-                    </th>
-                    <th>
-                        Ціна
-                    </th>
-                    <th>
-                        Тривалість
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Excursions)
-                {
-                    <tr>
-                        <td style="max-width: 250px;">
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            <p>Дата: @item.Date.ToString("dd.MM.yyyy")</p>
-                            <p>Час: @item.Date.ToString("HH:mm")</p>
-                        </td>
-                        <td style="max-width: 300px;">
-                            @Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Price) грн/чол
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Duration) год
-                        </td>
-                        <td>
+        <h4 class="cat-details-header">Екскурсії за цією категорією:</h4>
+        <div class="card-container">
+            @foreach (var item in Model.Excursions.OrderBy(e => e.Date))
+            {
+                <div class="card border-success card-excur">
+                    <div class="card-body card_inner">
+                        <div>
+                            <h4 class="card-title" style="text-align: center;">@item.Name.ToUpper()</h4>
+                            <hr />
+                            <div class="card-head">
+                                <p class="card-text">@item.Date.ToString("dd.MM.yyyy") о @item.Date.ToString("HH:mm")</p>
+                                <p class="card-text">@Html.DisplayFor(modelItem => item.Price) грн/чол</p>
+                            </div>
+                            <p class="card-text" style="margin-bottom: 2px">МІСЦЯ ПРОВЕДЕННЯ:</p>
+                            <p class="card-text">@Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))</p>
+
+                        </div>
+
+                        <div>
+                            <p class="card-text duration"> Тривалість: @item.Duration год</p>
+                            @if (item.Visitors.Count() == item.MaxPeopleAmount && !((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                            {
+                                <button class="btn btn-outline-danger disabled card-btn card-btn-main">Немає вільних місць...</button>
+                            }
                             @if (((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
                             {
-                                @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = item.Id })
+                                @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-danger card-btn card-btn-main" })
                             }
-                            @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                            @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id) && item.Visitors.Count() != item.MaxPeopleAmount)
                             {
-                                @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = item.Id })
-                            } |
-                            @Html.ActionLink("Редагувати", "Edit", "Excursions", new { id = item.Id }) |
-                            @Html.ActionLink("Докладніше", "Details", "Excursions", new { id = item.Id }) |
-                            @Html.ActionLink("Видалити", "Delete", "Excursions", new { id = item.Id })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                                @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-info card-btn card-btn-main" })
+                            }
+
+                            @Html.ActionLink("Докладніше", "Details", "Excursions", new { id = item.Id }, new { @class = "btn btn-outline-info card-btn" })
+                            @Html.ActionLink("Редагувати", "Edit", "Excursions", new { id = item.Id }, new { @class = "btn btn-outline-warning card-btn " })
+                            @Html.ActionLink("Видалити", "Delete", "Excursions", new { id = item.Id }, new { @class = "btn btn-outline-danger", @style = "width:100%" })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 }
 
 @if (!Model.Excursions.Any())
 {
-    <p>Немає екскурсій за цією категорією.</p>
+    <h5>Немає екскурсій за цією категорією.</h5>
 }
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> |
-    <a asp-action="Index">До всіх категорій</a>
+<div class="cat-details-btns">
+    <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a>
+    <a class="btn btn-outline-info" asp-action="Index">До всіх категорій</a>
 </div>

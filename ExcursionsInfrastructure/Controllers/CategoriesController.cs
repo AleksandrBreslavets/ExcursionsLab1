@@ -43,6 +43,8 @@ namespace ExcursionsInfrastructure.Controllers
             await _context.Categories
                  .Include(c=>c.Excursions)
                  .ThenInclude(pl=>pl.Places)
+                 .Include(c=>c.Excursions)
+                 .ThenInclude(e=>e.Visitors)
                  .ToListAsync();
 
             ViewData["Visitor"] = _context.Visitors.Include(v => v.Excursions).FirstOrDefault(v => v.Id == 3);

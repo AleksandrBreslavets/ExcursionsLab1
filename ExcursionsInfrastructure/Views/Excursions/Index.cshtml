@@ -3,6 +3,7 @@
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap_vapor.min.css" />
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
@@ -16,155 +17,148 @@
     <a asp-action="Create">Додати екскурсію</a>
 </p>
 
-<form asp-action="Filter">
+<form asp-action="Filter" class="form-filter">
     <div>
-        <label for="nameFilter">Назва:</label>
-        <input type="text" id="nameFilter" name="nameFilter">
+        <input type="text" style="margin-bottom:20px;" class="form-control" placeholder="Назва екскурсії" id="nameFilter" name="nameFilter">
     </div>
     <div class="form-group">
-        <label for="categoryFilter" class="control-label">Категорії:</label>
-        <select class="selectpicker s1"
-                data-size="5"
-                multiple
-                data-live-search="true"
-                asp-items="ViewBag.Categories"
-                title="Оберіть категорії..."
-                name="selectedCategories"></select>
+        <input type="text"
+               placeholder="Дата початку екскурсії"
+               onfocus="(this.type='date')"
+               onblur="(this.type='text')" 
+               class="form-control" 
+               id="dateFilter" 
+               name="dateFilter">
     </div>
-    <div class="form-group">
-        <label for="placeFilter" class="control-label">Місця проведення:</label>
-        <select class="selectpicker s2"
-                data-size="5"
-                multiple
-                data-live-search="true"
-                asp-items="ViewBag.Places"
-                title="Оберіть місця проведення..."
-                name="selectedPlaces"></select>
-    </div>
-    <div class="form-group">
-        <label for="cityFilter" class="control-label">Міста:</label>
-        <select class="selectpicker s3"
-                data-size="5"
-                multiple
-                data-live-search="true"
-                asp-items="ViewBag.Cities"
-                title="Оберіть міста..."
-                name="selectedCities"></select>
-    </div>
-    <div class="form-group">
-        <label for="countryFilter" class="control-label">Країни:</label>
-        <select class="selectpicker s4"
-                data-size="5"
-                multiple
-                data-live-search="true"
-                asp-items="ViewBag.Countries"
-                title="Оберіть країни..."
-                name="selectedCountries"></select>
-    </div>
-    <div class="form-group">
-        <label for="countryFilter" class="control-label">Ціновий діапазон:</label>
-        <select class="selectpicker s5"
-                data-size="5"
-                data-live-search="true"
-                asp-items="ViewBag.Prices"
-                title="Оберіть ціновий діапазон..."
-                name="selectedPrices"></select>
-    </div>
-    <div class="form-group">
-        <label class="control-label">Тривалість:
-        <select class="selectpicker s6"
-                title="Оберіть ціновий діапазон..."
-                name="selectedDuration">
-            <option value="1">Короткотривалі (0-5 годин)</option>
-            <option value="2">Одноденні (6-24 годин)</option>
-            <option value="3">Багатоденні (більше 24 годин)</option>
-        </select>
-        </label>
-    </div>
-    <div class="form-group">
-        <label class="control-label">
-            Кількість людей:
+    <div class="filter-box">
+        <div>
+            <select class="selectpicker s1"
+                    data-style="btn-dark"
+                    data-size="5"
+                    multiple
+                    data-live-search="true"
+                    asp-items="ViewBag.Categories"
+                    title="Оберіть категорії..."
+                    name="selectedCategories"></select>
+        </div>
+        <div>
+            <select class="selectpicker s5"
+                    data-style="btn-dark"
+                    data-size="5"
+                    data-live-search="true"
+                    asp-items="ViewBag.Prices"
+                    title="Оберіть ціновий діапазон..."
+                    name="selectedPrices"></select>
+        </div>
+        <div>
+            <select class="selectpicker s2"
+                    data-style="btn-dark"
+                    data-size="5"
+                    multiple
+                    data-live-search="true"
+                    asp-items="ViewBag.Places"
+                    title="Оберіть місця проведення..."
+                    name="selectedPlaces"></select>
+        </div>
+
+        <div>
+            <select class="selectpicker s3"
+                    data-style="btn-dark"
+                    data-size="5"
+                    multiple
+                    data-live-search="true"
+                    asp-items="ViewBag.Cities"
+                    title="Оберіть міста..."
+                    name="selectedCities"></select>
+        </div>
+        <div>
+            <select class="selectpicker s4"
+                    data-style="btn-dark"
+                    data-size="5"
+                    multiple
+                    data-live-search="true"
+                    asp-items="ViewBag.Countries"
+                    title="Оберіть країни..."
+                    name="selectedCountries"></select>
+        </div>
+        <div>
+            <select class="selectpicker s6"
+                    data-style="btn-dark"
+                    title="Оберіть ціновий діапазон..."
+                    name="selectedDuration">
+                <option value="1">Короткотривалі (0-5 годин)</option>
+                <option value="2">Одноденні (6-24 годин)</option>
+                <option value="3">Багатоденні (більше 24 годин)</option>
+            </select>
+        </div>
+        <div>
             <select class="selectpicker s7"
+                    data-style="btn-dark"
                     title="Оберіть кількість людей..."
                     name="selectedPeopleAm">
                 <option value="1">Малі групи (1-10 чоловік)</option>
                 <option value="2">Середні групи (11-40 чоловік)</option>
                 <option value="3">Великі групи (більше 40 чоловік)</option>
             </select>
-        </label>
+        </div>
+
     </div>
-    <div>
-        <label for="dateFilter">Дата проведення:</label>
-        <input type="date" id="dateFilter" name="dateFilter">
-    </div>
-    <button type="submit">Пошук</button>
-    <button type="button" onclick="clearSearch();">Очистити</button>
+    
+    
+   <div class="cat-details-btns filter-btn-box">
+        <button class="btn btn-outline-info" type="submit">Пошук</button>
+        <button class="btn btn-outline-danger" type="button" onclick="clearSearch();">Очистити</button>
+   </div>
+    
 </form>
 @if (Model.Any())
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Date)
-                </th>
-                <th>
-                    Місця відвідування
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Price)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Duration)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td style="max-width: 250px;">
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        <p>Дата: @item.Date.ToString("dd.MM.yyyy")</p>
-                        <p>Час: @item.Date.ToString("HH:mm")</p>
-                    </td>
-                    <td style="max-width: 300px;">
-                        @Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Price) грн/чол
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Duration) год
-                    </td>
-                    <td>
+    <div class="card-container">
+        @foreach (var item in Model.OrderBy(e => e.Date))
+        {
+            <div class="card border-success card-excur">
+                <div class="card-body card_inner">
+                    <div>
+                        <h4 class="card-title" style="text-align: center;">@item.Name.ToUpper()</h4>
+                        <hr />
+                        <div class="card-head">
+                            <p class="card-text">@item.Date.ToString("dd.MM.yyyy") о @item.Date.ToString("HH:mm")</p>
+                            <p class="card-text">@Html.DisplayFor(modelItem => item.Price) грн/чол</p>
+                        </div>
+                        <p class="card-text" style="margin-bottom: 2px">МІСЦЯ ПРОВЕДЕННЯ:</p>
+                        <p class="card-text">@Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))</p>
+                        
+                    </div>
+                    
+                    <div>
+                        <p class="card-text duration"> Тривалість: @item.Duration год</p>
+                        @if (item.Visitors.Count() == item.MaxPeopleAmount && !((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                        {
+                            <button class="btn btn-outline-danger disabled card-btn card-btn-main">Немає вільних місць...</button>
+                        }
                         @if (((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
                         {
-                            @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = item.Id })
+                            @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-danger card-btn card-btn-main" })
                         }
-                        @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                        @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id) && item.Visitors.Count() != item.MaxPeopleAmount)
                         {
-                            @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = item.Id })
-                        } |
-                        <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Докладніше</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a> 
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                            @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-info card-btn card-btn-main" })
+                        }
+
+                        <a class="btn btn-outline-info card-btn" asp-action="Details" asp-route-id="@item.Id">Докладніше</a>
+                        <a class="btn btn-outline-warning card-btn" asp-action="Edit"  asp-route-id="@item.Id">Редагувати</a>
+                        <a class="btn btn-outline-danger" asp-action="Delete" style="width:100%" asp-route-id="@item.Id">Видалити</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
 }
 
 @if (!Model.Any())
 {
-    <p>Екскурсій немає.</p>
+    <h5>Екскурсій немає.</h5>
 }
 <script>
     var setSelectValues = (selectNames, selectClass) => {

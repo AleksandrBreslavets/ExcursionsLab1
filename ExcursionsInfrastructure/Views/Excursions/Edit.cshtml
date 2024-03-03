@@ -2,6 +2,7 @@
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap_vapor.min.css" />
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
@@ -12,7 +13,7 @@
 <h1>Редагування екскурсії</h1>
 <hr />
 
-<div class="row">
+<div class="row" style="margin-top:30px;">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -51,36 +52,40 @@
                 <select asp-for="Categories"
                         class="selectpicker form-control s_cat"
                         multiple
+                        data-style="btn-dark"
                         data-size="5"
                         data-live-search="true"
                         asp-items="ViewBag.Categories"
                         title="Оберіть категорії..."></select>
                 <span asp-validation-for="Categories" class="text-danger"></span>
-                @Html.ActionLink("Додати категорію", "Create", "Categories")
+                <div>
+                    @Html.ActionLink("Додати категорію", "Create", "Categories")
+                </div>
             </div>
             <div class="form-group">
                 <label asp-for="Places" class="control-label"></label>
                 <select asp-for="Places"
                         class="selectpicker form-control s_pl"
                         multiple
+                        data-style="btn-dark"
                         data-size="5"
                         data-live-search="true"
                         asp-items="ViewBag.Places"
                         title="Оберіть місця проведення..."></select>
                 <span asp-validation-for="Places" class="text-danger"></span>
-                @Html.ActionLink("Додати місце проведення", "Create", "Places")
+                <div>
+                    @Html.ActionLink("Додати місце проведення", "Create", "Places")
+                </div>
             </div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <input type="submit" value="Зберегти" class="btn btn-primary" />
+            <div class="form-group cat-details-btns filter-btn-box">
+                <input class="btn btn-outline-success" type="submit" value="Зберегти"  />
+                <a class="btn btn-outline-info" asp-action="Index">До всіх екскурсій</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">До всіх екскурсій</a>
-</div>
 
 <script>
     $('select').selectpicker();

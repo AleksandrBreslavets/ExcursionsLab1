@@ -52,7 +52,7 @@ namespace ExcursionsInfrastructure.Controllers
         // GET: Cities/Create
         public IActionResult Create()
         {
-            ViewData["CountryId"] = new SelectList(_context.Countries, "Id", "Name");
+            ViewData["CountryId"] = new SelectList(_context.Countries.OrderBy(c => c.Name), "Id", "Name");
             return View();
         }
 
@@ -74,7 +74,7 @@ namespace ExcursionsInfrastructure.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CountryId"] = new SelectList(_context.Countries, "Id", "Name", city.CountryId);
+            ViewData["CountryId"] = new SelectList(_context.Countries.OrderBy(c=>c.Name), "Id", "Name", city.CountryId);
             return View(city);
         }
 
@@ -91,7 +91,7 @@ namespace ExcursionsInfrastructure.Controllers
             {
                 return NotFound();
             }
-            ViewData["CountryId"] = new SelectList(_context.Countries, "Id", "Name", city.CountryId);
+            ViewData["CountryId"] = new SelectList(_context.Countries.OrderBy(c => c.Name), "Id", "Name", city.CountryId);
             return View(city);
         }
 
@@ -132,7 +132,7 @@ namespace ExcursionsInfrastructure.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CountryId"] = new SelectList(_context.Countries, "Id", "Name", city.CountryId);
+            ViewData["CountryId"] = new SelectList(_context.Countries.OrderBy(c => c.Name), "Id", "Name", city.CountryId);
             return View(city);
         }
 

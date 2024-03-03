@@ -21,7 +21,7 @@ public partial class Excursion:Entity
     [Display(Name = "Максимальна кількість відвідувачів")]
     [Required(ErrorMessage = "Максимальна кількість відвідувачів обов'язкова!")]
     [Range(1, int.MaxValue, ErrorMessage = "Значення повинно бути більше 0")]
-    [RegularExpression(@"^\d+$", ErrorMessage = "Максимальна кількість людей повинна бути цілим числом")]
+    [RegularExpression(@"^\d+$", ErrorMessage = "Максимальна кількість людей повинна бути цілим додатнім числом")]
     public int MaxPeopleAmount { get; set; }
 
     [Display(Name = "Ціна")]
@@ -33,7 +33,7 @@ public partial class Excursion:Entity
     [Display(Name = "Тривалість")]
     [Required(ErrorMessage = "Тривалість є обов'язковою!")]
     [Range(1, int.MaxValue, ErrorMessage = "Значення повинно бути більше 0")]
-    [RegularExpression(@"^\d+$", ErrorMessage = "Тривалість повинна бути цілим числом")]
+    [RegularExpression(@"^\d+$", ErrorMessage = "Тривалість повинна бути цілим додатнім числом")]
     public int Duration { get; set; }
 
     [Display(Name = "Місця проведення")]

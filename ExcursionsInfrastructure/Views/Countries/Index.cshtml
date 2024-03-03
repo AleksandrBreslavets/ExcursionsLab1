@@ -11,35 +11,26 @@
 </p>
 @if (Model.Any())
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Name)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id">Докладніше</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="cat-container">
+        @foreach (var item in Model.OrderBy(c=>c.Name))
+        {
+            <div class="card border-dark" style="width:100%">
+                <div class="card-body card-cat-inner">
+                   <h4 class="card-title">@item.Name</h4>
+
+                    <div class="card-cat-btns">
+                        <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.Id">Докладніше</a>
+                        <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@item.Id">Редагувати</a>
+                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 }
 
 
 @if (!Model.Any())
 {
-    <p>Немає країн.</p>
+    <h5>Немає країн.</h5>
 }

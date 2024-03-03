@@ -22,9 +22,9 @@
         </dd>
     </dl>
     
-    <form asp-action="Delete">
+    <form asp-action="Delete" class="form-group cat-details-btns filter-btn-box">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Видалити" class="btn btn-danger" /> |
-        <a asp-action="Index">До всіх користувачів</a>
+        <input class="btn btn-outline-danger" type="submit" value="Видалити" />
+        <a class="btn btn-outline-info" asp-action="Index">До всіх користувачів</a>
     </form>
 </div>

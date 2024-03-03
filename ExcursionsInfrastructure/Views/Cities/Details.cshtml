@@ -19,61 +19,37 @@
     </dl>
 </div>
 <hr />
+
 @if (Model.Places.Any())
 {
-    <div>
-        <h4>Місця проведення екскурсій в цьому місті:</h4>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>
-                        Місце
-                    </th>
-                    <th>
-                        Адреса
-                    </th>
-                    <th>
-                        Координата X
-                    </th>
-                    <th>
-                        Координата Y
-                    </th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.Places)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Adress)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CoordinateX)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.CoordinateY)
-                        </td>
-                        <td>
-                            @Html.ActionLink("Редагувати", "Edit", "Places", new { id = item.Id }) |
-                            @Html.ActionLink("Докладніше", "Details", "Places", new { id = item.Id }) |
-                            @Html.ActionLink("Видалити", "Delete", "Places", new { id = item.Id })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <h4 class="cat-details-header">Місця проведення екскурсій в цьому місті:</h4>
+    <div class="cat-container">
+        @foreach (var item in Model.Places.OrderBy(c => c.Name))
+        {
+            <div class="card border-dark" style="width:100%">
+                <div class="card-body card-cat-inner">
+                    <div>
+                        <h4 class="card-title">@item.Name</h4>
+                        <p class="card-text">Місто: @item.City.Name</p>
+                        <p class="card-text">Адреса: @item.Adress</p>
+                    </div>
+
+                    <div class="card-cat-btns">
+                        @Html.ActionLink("Докладніше", "Details", "Places", new { id = item.Id }, new { @class = "btn btn-outline-info" })
+                        @Html.ActionLink("Редагувати", "Edit", "Places", new { id = item.Id }, new { @class = "btn btn-outline-warning" })
+                        @Html.ActionLink("Видалити", "Delete", "Places", new { id = item.Id }, new { @class = "btn btn-outline-danger" })
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 }
 
 @if (!Model.Places.Any())
 {
-    <p>В місті немає жодного місця проведення екскурсій.</p>
+    <h5>В місті немає жодного місця проведення екскурсій.</h5>
 }
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> |
-    <a asp-action="Index">До всіх міст</a>
+<div class="cat-details-btns">
+    <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a>
+    <a class="btn btn-outline-info" asp-action="Index">До всіх міст</a>
 </div>

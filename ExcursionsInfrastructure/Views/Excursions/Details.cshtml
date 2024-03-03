@@ -11,62 +11,31 @@
 
 <div>
     <hr />
-    <ul class="list-group list-group-horizontal">
+    <ul class="details-cat-list">
         @foreach(var category in Model.Categories)
         {
-            <li class="list-group-item">
-                <a href="@Url.Action("Details", "Categories", new { id = category.Id })">@category.Name</a>
+            <li>
+                <a class="btn btn-outline-info" href="@Url.Action("Details", "Categories", new { id = category.Id })">@category.Name</a>
             </li>
         }
     </ul>
-    <dl class="row">
-        
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd class = "col-sm-10">
-            @Model.Date.ToString("dd.MM.yyyy") о @Model.Date.ToString("HH:mm")
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MaxPeopleAmount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MaxPeopleAmount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Model.Price грн/чол
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Duration)
-        </dt>
-        <dd class = "col-sm-10">
-            @Model.Duration год
-        </dd>
-        <dt class="col-sm-2">
-            Міста
-        </dt>
-        <dd class="col-sm-10">
-            @Html.Raw(string.Join(", ",Model.Places.Select(p => p.City.Name).Distinct()))
-        </dd>
-        <dt class="col-sm-2">
-            План відвідувань
-        </dt>
-        <dd class="col-sm-10">
 
-            @Html.Raw(string.Join(", ", Model.Places.Select(p => p.Name)))
-        </dd>
-    </dl>
+    <div class="card-cat-inner">
+        <h4>@Model.Date.ToString("dd.MM.yyyy") о @Model.Date.ToString("HH:mm")</h4>
+        <h4>@Model.Price грн/чол</h4>
+    </div>
+    <p class="lead" style="margin-top:20px; font-style:italic;">@Model.Description</p>
+
+    <div class="details-excur-more-info">
+        <h2 style="margin-bottom:10px;">Додаткова інформація</h2>
+        <p><strong>Максимальна кількість відвідувачів: </strong>@Model.MaxPeopleAmount чоловік</p>
+        <p><strong>Тривалість: </strong>@Model.Duration год</p>
+        <p><strong>Міста: </strong>@Html.Raw(string.Join(", ", Model.Places.Select(p => p.City.Name).Distinct()))</p>
+        <p><strong>План відвідувань: </strong>@Html.Raw(string.Join(", ", Model.Places.Select(p => p.Name)))</p>
+    </div>
+   
 </div>
-<h2>Маршрут екскурсії на карті</h2>
+<h2 style="margin-bottom:10px;">Маршрут екскурсії на карті</h2>
 <div id="map" style="height: 500px; width: 100%;"></div>
 
 
@@ -85,17 +54,21 @@
         </text>
     }
 </script>
-<div>
+<div class="cat-details-btns">
+    @if (Model.Visitors.Count() == Model.MaxPeopleAmount && !((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == Model.Id))
+    {
+        <button class="btn btn-outline-danger disabled">Немає вільних місць...</button>
+    }
     @if (((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == Model.Id))
     {
-        @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = Model.Id })
+        @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = Model.Id }, new { @class = "btn btn-outline-danger" })
     }
-    @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == Model.Id))
+    @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == Model.Id) && Model.Visitors.Count() != Model.MaxPeopleAmount)
     {
-        @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = Model.Id })
-    } |
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> |
-    <a asp-action="Index">До всіх екскурсій</a>
+        @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = Model.Id }, new { @class = "btn btn-outline-info" })
+    }
+    <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a>
+    <a class="btn btn-outline-info" asp-action="Index">До всіх екскурсій</a>
 </div>
 
   

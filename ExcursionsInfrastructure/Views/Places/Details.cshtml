@@ -35,7 +35,8 @@
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> |
-    <a asp-action="Index">До всіх місць проведення</a>
+<div class="cat-details-btns">
+    <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a>
+    <a class="btn btn-outline-info" asp-action="Index">До всіх місць проведення</a>
 </div>
+

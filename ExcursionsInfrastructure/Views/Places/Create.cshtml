@@ -7,43 +7,45 @@
 <h1>Створення місця проведення</h1>
 <hr />
 
-<div class="row">
+<div class="row" style="margin-top:30px;">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
+            <div class="form-group" style="margin-bottom:16px;">
+                <label asp-for="Name" class="control-label" style="margin-bottom:8px;"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Adress" class="control-label"></label>
+            <div class="form-group" style="margin-bottom:16px;">
+                <label asp-for="Adress" class="control-label" style="margin-bottom:8px;"></label>
                 <input asp-for="Adress" class="form-control" />
                 <span asp-validation-for="Adress" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CoordinateX" class="control-label"></label>
+            <div class="form-group" style="margin-bottom:16px;">
+                <label asp-for="CoordinateX" class="control-label" style="margin-bottom:8px;"></label>
                 <input asp-for="CoordinateX" class="form-control" />
                 <span asp-validation-for="CoordinateX" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="CoordinateY" class="control-label"></label>
+            <div class="form-group" style="margin-bottom:16px;">
+                <label asp-for="CoordinateY" class="control-label" style="margin-bottom:8px;"></label>
                 <input asp-for="CoordinateY" class="form-control" />
                 <span asp-validation-for="CoordinateY" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CityId" class="control-label"></label>
+                <label asp-for="CityId" class="control-label" style="margin-bottom:8px;"></label>
                 <select asp-for="CityId" class ="form-control" asp-items="ViewBag.CityId" name="cityId"></select>
+                <span asp-validation-for="CityId" class="text-danger"></span>
+                <div>
+                    @Html.ActionLink("Додати місто", "Create", "Cities")
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Створити" class="btn btn-primary" />
+
+            <div class="form-group cat-details-btns filter-btn-box">
+                <input class="btn btn-outline-success" type="submit" value="Створити" />
+                <a class="btn btn-outline-info" asp-action="Index">До всіх місць проведення</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">До всіх місць проведення</a>
 </div>
 
 @section Scripts {

@@ -87,6 +87,7 @@ namespace ExcursionsInfrastructure.Controllers
         {
             await _context.Excursions
                 .Include(e => e.Places)
+                .Include(e=>e.Visitors)
                 .ToListAsync();
 
             var filteredExcursions = FilterExcursions(
@@ -128,7 +129,9 @@ namespace ExcursionsInfrastructure.Controllers
             await _context.Excursions
                  .Include(pe => pe.Places)
                  .ThenInclude(pl=>pl.City)
+                 .Include(e=>e.Visitors)
                  .ToListAsync();
+
             if (excursion == null)
             {
                 return NotFound();
