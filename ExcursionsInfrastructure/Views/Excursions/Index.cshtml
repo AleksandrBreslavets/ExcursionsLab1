@@ -17,6 +17,8 @@
     <a asp-action="Create">Додати екскурсію</a>
 </p>
 
+
+
 <form asp-action="Filter" class="form-filter">
     <div>
         <input type="text" style="margin-bottom:20px;" class="form-control" placeholder="Назва екскурсії" id="nameFilter" name="nameFilter">
@@ -153,7 +155,11 @@
             </div>
         }
     </div>
-
+ 
+    <div class="chart-box">
+         <div class="btn-outline-info disabled chart" id="chart1"></div>
+    </div>
+    
 }
 
 @if (!Model.Any())
@@ -201,3 +207,53 @@
         $(".selectpicker").val('').trigger('change');
     }
 </script>
+
+@section scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            $.get('/api/Chart/JsonData', function (JsonData) {
+                var data = google.visualization.arrayToDataTable(JsonData, false);
+
+                var options = {
+                    title: "Популярність екскурсій та турів",
+                    titleTextStyle: {
+                        color: 'white', 
+                        fontSize: 15, 
+                        bold:true
+                    },
+                    vAxis: {
+                        format: '0',
+                        textStyle: {
+                            color: 'white'
+                        }
+                    },
+                    colors: ['green'],
+                    legend: {
+                        textStyle: {
+                            color: 'white'
+                        },
+                        alignment: 'end',
+                        position: 'top',
+                        maxLines: 2,
+                        textStyle: {
+                            color: 'white' 
+                        }
+                    },
+                    hAxis: {
+                        textStyle: {
+                            color: 'white' 
+                        }
+                    },
+                    backgroundColor: 'transparent' 
+                };
+                var chart = new google.visualization.ColumnChart(document.getElementById('chart1'));
+                chart.draw(data, options);
+            });
+        }
+    </script>
+}
+    
