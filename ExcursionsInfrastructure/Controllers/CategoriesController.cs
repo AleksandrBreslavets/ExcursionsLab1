@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExcursionsDomain.Model;
 using ExcursionsInfrastructure;
+using ExcursionsInfrastructure.Services;
 
 namespace ExcursionsInfrastructure.Controllers
 {
@@ -165,3 +166,4 @@ namespace ExcursionsInfrastructure.Controllers
         }
     }
 }
+

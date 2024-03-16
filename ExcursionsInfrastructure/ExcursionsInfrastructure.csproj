@@ -7,28 +7,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="NewFolder\**" />
     <Compile Remove="Views\PlacesExcursions\**" />
-    <Content Remove="NewFolder\**" />
     <Content Remove="Views\PlacesExcursions\**" />
-    <EmbeddedResource Remove="NewFolder\**" />
     <EmbeddedResource Remove="Views\PlacesExcursions\**" />
-    <None Remove="NewFolder\**" />
     <None Remove="Views\PlacesExcursions\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\ErrorController.cs" />
     <Compile Remove="Controllers\PlacesExcursionsController.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Categories\Import.cshtml" />
     <Content Remove="wwwroot\lib\bootstrap\dist\css\bootstrap_lux.css" />
     <Content Remove="wwwroot\lib\bootstrap\dist\css\bootstrap_lux.min.css" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.102.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
       <PrivateAssets>all</PrivateAssets>

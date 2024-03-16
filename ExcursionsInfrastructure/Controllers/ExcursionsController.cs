@@ -8,16 +8,21 @@ using Microsoft.EntityFrameworkCore;
 using ExcursionsDomain.Model;
 using ExcursionsInfrastructure;
 using ExcursionsInfrastructure.Helpers.Filters;
+using ExcursionsInfrastructure.Services;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace ExcursionsInfrastructure.Controllers
 {
     public class ExcursionsController : Controller
     {
         private readonly ExcursionsDbContext _context;
-        
+        private readonly IDataPortServiceFactory<Excursion> _categoryDataPortServiceFactory;
+
         public ExcursionsController(ExcursionsDbContext context)
         {
             _context = context;
+            _categoryDataPortServiceFactory = new ExcursionDataPortServiceFactory(_context);
         }
 
         private List<SelectListItem> FormPricesDiapazones()
@@ -70,6 +75,11 @@ namespace ExcursionsInfrastructure.Controllers
             filteredExcursions = filter.FilterExcursionsByDuration(filteredExcursions, selectedDuration);
             filteredExcursions = filter.FilterExcursionsByPeopleAmount(filteredExcursions, selectedPeopleAm);
 
+            foreach(var e in filteredExcursions)
+            {
+                //_currentExcursions.Add(e.Id);
+            }
+
             return filteredExcursions;
         }
 
@@ -101,6 +111,14 @@ namespace ExcursionsInfrastructure.Controllers
                 selectedDuration, 
                 selectedPeopleAm);
 
+            SetCurrentItems(new List<int>(), "_selectedCategories");
+            SetCurrentItems(await filteredExcursions.Select(e => e.Id).ToListAsync(), "_currentExcursions");
+
+            if(selectedCategories.Length > 0)
+            {
+                SetCurrentItems(selectedCategories.ToList(), "_selectedCategories");
+            }
+
             ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name");
             ViewData["Places"] = new SelectList(_context.Places, "Id", "Name");
             ViewData["Cities"] = new SelectList(_context.Cities, "Id", "Name");
@@ -109,6 +127,18 @@ namespace ExcursionsInfrastructure.Controllers
             ViewData["Visitor"] = _context.Visitors.Include(v=>v.Excursions).FirstOrDefault(v => v.Id == 3);
 
             return View(await filteredExcursions.ToListAsync());
+        }
+
+        private List<int> GetCurrentItems(string itemName)
+        {
+            var excursionsJson = HttpContext.Session.GetString(itemName);
+            return excursionsJson != null ? JsonConvert.DeserializeObject<List<int>>(excursionsJson) : new List<int>();
+        }
+
+        private void SetCurrentItems(List<int> items, string itemName)
+        {
+            var excursionsJson = JsonConvert.SerializeObject(items);
+            HttpContext.Session.SetString(itemName, excursionsJson);
         }
 
         // GET: Excursions/Details/5
@@ -391,6 +421,55 @@ namespace ExcursionsInfrastructure.Controllers
             return RedirectToAction("Index", routeValues);
         }
 
+        [HttpGet]
+        public IActionResult Import()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Import(IFormFile fileExcel, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var importService = _categoryDataPortServiceFactory.GetImportService(fileExcel.ContentType);
+                using var stream = fileExcel.OpenReadStream();
+                await importService.ImportFromStreamAsync(stream, cancellationToken);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception e)
+            {
+                return RedirectToAction("Error", "Home", new { message = e.Message, title = "Помилка під час обробки файлу" });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Export([FromQuery] string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var exportService = _categoryDataPortServiceFactory.GetExportService(contentType);
+
+                var memoryStream = new MemoryStream();
+
+                await exportService.WriteToAsync(memoryStream, cancellationToken, GetCurrentItems("_currentExcursions"), GetCurrentItems("_selectedCategories"));
+
+                await memoryStream.FlushAsync(cancellationToken);
+                memoryStream.Position = 0;
+
+                return new FileStreamResult(memoryStream, contentType)
+                {
+                    FileDownloadName = $"excursions_{DateTime.UtcNow.ToShortDateString()}.xlsx"
+                };
+            }
+            catch(Exception e)
+            {
+                return RedirectToAction("Error", "Home", new { message = e.Message, title = "Помилка під час запису до файлу" });
+            }
+            
+        }
 
     }
 }

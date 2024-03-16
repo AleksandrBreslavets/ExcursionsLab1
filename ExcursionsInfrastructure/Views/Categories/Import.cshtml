@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Імпорт";
+}
+
+<h1 >Імпортування даних з файлу</h1>
+<hr style="margin-bottom:50px;" />
+
+<div>
+    <h3 style="margin-bottom:20px;">Оберіть Excel-файл для завантаження</h3>
+    @using (Html.BeginForm("Import", "Excursions", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div>
+            Завантажте Excel-фай:
+            <input style="width:300px; margin-top:10px;" class="form-control" type="file" name="fileExcel" id="fileExcel" accept=".xlsx, .xls" placeholder="Оберіть файл" />
+
+            <div class="form-group cat-details-btns filter-btn-box">
+                <input class="btn btn-outline-success" type="submit" value="Завантажити" />
+                <a href="@Url.Action("Index", "Excursions")" class="btn btn-outline-info">До всіх екскурсій</a>
+            </div>
+        </div>
+    }
+</div>
