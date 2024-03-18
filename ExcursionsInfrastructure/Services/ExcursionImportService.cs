@@ -69,7 +69,7 @@ namespace ExcursionsInfrastructure.Services
             {
                 return false;
             }
-
+            
             return true;
         }
 

@@ -50,7 +50,7 @@ namespace ExcursionsInfrastructure.Services
             }
 
             worksheet.Cell(rowIndex, columnIndex++).Value = e.Name;
-            worksheet.Cell(rowIndex, columnIndex++).Value = e.Date.ToString("MM/dd/yyyy HH:mm:ss");
+            worksheet.Cell(rowIndex, columnIndex++).Value = e.Date;
             worksheet.Cell(rowIndex, columnIndex++).Value = e.MaxPeopleAmount;
             worksheet.Cell(rowIndex, columnIndex++).Value = string.Join(",", e.Categories.Select(c=>c.Name));
             worksheet.Cell(rowIndex, columnIndex++).Value = string.Join(",", places);
