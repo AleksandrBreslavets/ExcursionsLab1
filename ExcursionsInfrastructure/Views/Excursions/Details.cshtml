@@ -55,19 +55,25 @@
     }
 </script>
 <div class="cat-details-btns">
-    @if (Model.Visitors.Count() == Model.MaxPeopleAmount && !((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == Model.Id))
+    @if(User.Identity.IsAuthenticated && !User.IsInRole("admin"))
     {
-        <button class="btn btn-outline-danger disabled">Немає вільних місць...</button>
+        @if (Model.Visitors.Count() == Model.MaxPeopleAmount && !((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == Model.Id))
+        {
+            <button class="btn btn-outline-danger disabled">Немає вільних місць...</button>
+        }
+        @if (((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == Model.Id))
+        {
+            @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = Model.Id }, new { @class = "btn btn-outline-danger" })
+        }
+        @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == Model.Id) && Model.Visitors.Count() != Model.MaxPeopleAmount)
+        {
+            @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = Model.Id }, new { @class = "btn btn-outline-info" })
+        }
     }
-    @if (((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == Model.Id))
+    @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
     {
-        @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = Model.Id }, new { @class = "btn btn-outline-danger" })
+        <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a>
     }
-    @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == Model.Id) && Model.Visitors.Count() != Model.MaxPeopleAmount)
-    {
-        @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = Model.Id }, new { @class = "btn btn-outline-info" })
-    }
-    <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a>
     <a class="btn btn-outline-info" asp-action="Index">До всіх екскурсій</a>
 </div>
 

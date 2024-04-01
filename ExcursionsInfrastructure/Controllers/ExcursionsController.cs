@@ -11,6 +11,7 @@ using ExcursionsInfrastructure.Helpers.Filters;
 using ExcursionsInfrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExcursionsInfrastructure.Controllers
 {
@@ -124,7 +125,7 @@ namespace ExcursionsInfrastructure.Controllers
             ViewData["Cities"] = new SelectList(_context.Cities, "Id", "Name");
             ViewData["Countries"] = new SelectList(_context.Countries, "Id", "Name");
             ViewData["Prices"] = FormPricesDiapazones();
-            ViewData["Visitor"] = _context.Visitors.Include(v=>v.Excursions).FirstOrDefault(v => v.Id == 3);
+            ViewData["Visitor"] = _context.Visitors.Include(v=>v.Excursions).FirstOrDefault(v => v.Email==User.Identity.Name);
 
             return View(await filteredExcursions.ToListAsync());
         }
@@ -167,12 +168,13 @@ namespace ExcursionsInfrastructure.Controllers
                 return NotFound();
             }
 
-            ViewData["Visitor"] = _context.Visitors.Include(v => v.Excursions).FirstOrDefault(v => v.Id == 3);
+            ViewData["Visitor"] = _context.Visitors.Include(v => v.Excursions).FirstOrDefault(v => v.Email == User.Identity.Name);
 
             return View(excursion);
         }
 
         // GET: Excursions/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             ViewData["Categories"] = new SelectList(_context.Categories, "Id", "Name");
@@ -197,6 +199,7 @@ namespace ExcursionsInfrastructure.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("Date,Description,Name,MaxPeopleAmount,Price,Duration,Id")] Excursion excursion, int[] Categories, int[] Places)
         {
             if (ModelState.IsValid)
@@ -214,6 +217,7 @@ namespace ExcursionsInfrastructure.Controllers
         }
 
         // GET: Excursions/Edit/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -310,6 +314,7 @@ namespace ExcursionsInfrastructure.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Date,Description,Name,MaxPeopleAmount,Price,Duration,Id")] Excursion excursion, int[] Categories, int[] Places)
         {
             if (id != excursion.Id)
@@ -355,6 +360,7 @@ namespace ExcursionsInfrastructure.Controllers
             return View(excursion);
         }
         // GET: Excursions/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -375,6 +381,7 @@ namespace ExcursionsInfrastructure.Controllers
         // POST: Excursions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             
@@ -422,6 +429,7 @@ namespace ExcursionsInfrastructure.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public IActionResult Import()
         {
             return View();
@@ -429,6 +437,7 @@ namespace ExcursionsInfrastructure.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Import(IFormFile fileExcel, CancellationToken cancellationToken = default)
         {
             try

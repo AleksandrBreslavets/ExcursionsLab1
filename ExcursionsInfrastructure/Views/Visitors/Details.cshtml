@@ -1,73 +1,75 @@
-﻿@model ExcursionsDomain.Model.Visitor
+﻿@model ExcursionsDomain.Model.VisitorWithRoles
 @using ExcursionsDomain.Model
 @{
-    ViewData["Title"] = @Model.Name;
+    ViewData["Title"] = @Model.Visitor.Name;
 }
 
-<h1 class="display-4">@Model.Name</h1>
+<h1 class="display-4">@Model.Visitor.Name</h1>
 <hr />
 
 <div>
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.Visitor.Email)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
+            @Html.DisplayFor(model => model.Visitor.Email)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumber)
+            @Html.DisplayNameFor(model => model.Visitor.PhoneNumber)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumber)
+            @Html.DisplayFor(model => model.Visitor.PhoneNumber)
+        </dd>
+        <dt class="col-sm-2">
+            Ролі
+        </dt>
+        <dd class="col-sm-10">
+            @(Model.Roles.Any() ? string.Join(", ", Model.Roles) : "немає ролей")
         </dd>
     </dl>
 </div>
 <hr />
-@if (Model.Excursions.Any())
+
+@if (!Model.Roles.Contains("admin"))
 {
-    <div>
-        <h4 class="cat-details-header">Екскурсії цього користувача:</h4>
-        <div class="card-container">
-            @foreach (var item in Model.Excursions.OrderBy(e => e.Date))
-            {
-                <div class="card border-success card-excur">
-                    <div class="card-body card_inner">
-                        <div>
-                            <h4 class="card-title" style="text-align: center;">@item.Name.ToUpper()</h4>
-                            <hr />
-                            <div class="card-head">
-                                <p class="card-text">@item.Date.ToString("dd.MM.yyyy") о @item.Date.ToString("HH:mm")</p>
-                                <p class="card-text">@Html.DisplayFor(modelItem => item.Price) грн/чол</p>
+    @if (Model.Visitor.Excursions.Any())
+    {
+        <div>
+            <h4 class="cat-details-header">Екскурсії цього користувача:</h4>
+            <div class="card-container">
+                @foreach (var item in Model.Visitor.Excursions.OrderBy(e => e.Date))
+                {
+                    <div class="card border-success card-excur">
+                        <div class="card-body card_inner">
+                            <div>
+                                <h4 class="card-title" style="text-align: center;">@item.Name.ToUpper()</h4>
+                                <hr />
+                                <div class="card-head">
+                                    <p class="card-text">@item.Date.ToString("dd.MM.yyyy") о @item.Date.ToString("HH:mm")</p>
+                                    <p class="card-text">@Html.DisplayFor(modelItem => item.Price) грн/чол</p>
+                                </div>
+                                <p class="card-text" style="margin-bottom: 2px">МІСЦЯ ПРОВЕДЕННЯ:</p>
+                                <p class="card-text">@Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))</p>
+                                <div>
+                                    <p class="card-text"> Тривалість: @item.Duration год</p>
+                                    <a class="btn btn-outline-info card-btn" asp-controller="Excursions" asp-action="Details" asp-route-id="@item.Id">Докладніше</a>
+                                </div>
                             </div>
-                            <p class="card-text" style="margin-bottom: 2px">МІСЦЯ ПРОВЕДЕННЯ:</p>
-                            <p class="card-text">@Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))</p>
-
-                        </div>
-
-                        <div>
-                            <p class="card-text duration"> Тривалість: @item.Duration год</p>
-                            @if (((IEnumerable<Excursion>)Model.Excursions).Any(e => e.Id == item.Id))
-                            {
-                                @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-danger card-btn card-btn-main" })
-                            }
-                            @Html.ActionLink("Докладніше", "Details", "Excursions", new { id = item.Id }, new { @class = "btn btn-outline-info card-btn" })
-                            @Html.ActionLink("Редагувати", "Edit", "Excursions", new { id = item.Id }, new { @class = "btn btn-outline-warning card-btn " })
-                            @Html.ActionLink("Видалити", "Delete", "Excursions", new { id = item.Id }, new { @class = "btn btn-outline-danger", @style = "width:100%" })
                         </div>
                     </div>
-                </div>
-            }
+                }
+            </div>
         </div>
-    </div>
-}
+    }
 
-@if (!Model.Excursions.Any())
-{
-    <h5>Користувач не записаний на жодну екскурсію.</h5>
+    @if (!Model.Visitor.Excursions.Any())
+    {
+        <h5>Користувач не записаний на жодну екскурсію.</h5>
+    }
 }
 
 <div class="cat-details-btns">
-    <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a> 
     <a class="btn btn-outline-info" asp-action="Index">До всіх користувачів</a>
+    <a class="btn btn-outline-info" asp-controller="Roles" asp-action="Edit" asp-route-userid="@Model.UserId">Права доступу</a>
 </div>

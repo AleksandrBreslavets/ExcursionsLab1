@@ -32,22 +32,27 @@
 
                         <div>
                             <p class="card-text duration"> Тривалість: @item.Duration год</p>
-                            @if (item.Visitors.Count() == item.MaxPeopleAmount && !((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                            @if (User.Identity.IsAuthenticated && !User.IsInRole("admin"))
                             {
-                                <button class="btn btn-outline-danger disabled card-btn card-btn-main">Немає вільних місць...</button>
+                                @if (item.Visitors.Count() == item.MaxPeopleAmount && !((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                                {
+                                    <button class="btn btn-outline-danger disabled card-btn card-btn-main">Немає вільних місць...</button>
+                                }
+                                @if (((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                                {
+                                    @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-danger card-btn card-btn-main" })
+                                }
+                                @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id) && item.Visitors.Count() != item.MaxPeopleAmount)
+                                {
+                                    @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-info card-btn card-btn-main" })
+                                }
                             }
-                            @if (((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
-                            {
-                                @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-danger card-btn card-btn-main" })
-                            }
-                            @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id) && item.Visitors.Count() != item.MaxPeopleAmount)
-                            {
-                                @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-info card-btn card-btn-main" })
-                            }
-
                             @Html.ActionLink("Докладніше", "Details", "Excursions", new { id = item.Id }, new { @class = "btn btn-outline-info card-btn" })
-                            @Html.ActionLink("Редагувати", "Edit", "Excursions", new { id = item.Id }, new { @class = "btn btn-outline-warning card-btn " })
-                            @Html.ActionLink("Видалити", "Delete", "Excursions", new { id = item.Id }, new { @class = "btn btn-outline-danger", @style = "width:100%" })
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
+                            {
+                                @Html.ActionLink("Редагувати", "Edit", "Excursions", new { id = item.Id }, new { @class = "btn btn-outline-warning card-btn " })
+                                @Html.ActionLink("Видалити", "Delete", "Excursions", new { id = item.Id }, new { @class = "btn btn-outline-danger", @style = "width:100%" })
+                            }
                         </div>
                     </div>
                 </div>
@@ -62,6 +67,9 @@
 }
 
 <div class="cat-details-btns">
+@if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
+{
     <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@Model?.Id">Редагувати</a>
+}
     <a class="btn btn-outline-info" asp-action="Index">До всіх категорій</a>
 </div>

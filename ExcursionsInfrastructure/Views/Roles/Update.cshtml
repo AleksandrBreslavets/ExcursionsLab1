@@ -1,17 +1,17 @@
-﻿@model ExcursionsDomain.Model.Category
+﻿@model Microsoft.AspNetCore.Identity.IdentityRole
 
 @{
     ViewData["Title"] = "Редагування";
 }
 
-<h1>Редагування категорії</h1>
+<h1>Редагування ролі</h1>
 
 <hr />
 <div class="row" style="margin-top:30px;">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Update">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group" >
+            <div class="form-group">
                 <label asp-for="Name" class="control-label" style="margin-bottom:8px;"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
@@ -20,12 +20,9 @@
 
             <div class="form-group cat-details-btns filter-btn-box">
                 <input class="btn btn-outline-success" type="submit" value="Зберегти" />
-                <a class="btn btn-outline-info" asp-action="Index">До всіх категорій</a>
+                <a class="btn btn-outline-info" asp-action="Index">До всіх ролей</a>
             </div>
         </form>
     </div>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

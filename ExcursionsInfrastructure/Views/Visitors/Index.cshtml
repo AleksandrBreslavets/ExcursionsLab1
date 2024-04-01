@@ -1,31 +1,32 @@
-﻿@model IEnumerable<ExcursionsDomain.Model.Visitor>
+﻿@model IEnumerable<ExcursionsDomain.Model.VisitorWithRoles>
 
 @{
-    ViewData["Title"] = "Коистувачі";
+    ViewData["Title"] = "Користувачі";
 }
 
 <h1>Користувачі</h1>
 
-<p>
-    <a asp-action="Create">Створити користувача</a>
-</p>
 @if (Model.Any())
 {
     <div class="cat-container">
-        @foreach (var item in Model.OrderBy(c => c.Name))
+        @foreach (var item in Model.OrderBy(c => c.Visitor.Name))
         {
             <div class="card border-dark" style="width:100%">
                 <div class="card-body card-cat-inner">
                     <div>
-                        <h4 class="card-title">@item.Name</h4>
-                        <p class="card-text">Email: @item.Email</p>
-                        <p class="card-text">Номер телефону: @item.PhoneNumber</p>
+                        <h4 class="card-title">@item.Visitor.Name</h4>
+                        <p class="card-text">Email: @item.Visitor.Email</p>
+                        <p class="card-text">Номер телефону: @item.Visitor.PhoneNumber</p>
+                        <p class="card-text">Ролі: @(item.Roles.Any() ? string.Join(", ", item.Roles) : "немає ролей")</p>
                     </div>
 
                     <div class="card-cat-btns">
-                        <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.Id">Докладніше</a>
-                        <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@item.Id">Редагувати</a>
-                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+                        <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.Visitor.Id">Докладніше</a>
+                        <a class="btn btn-outline-info" asp-controller="Roles" asp-action="Edit" asp-route-userid="@item.UserId">Права доступу</a>
+                        @if (!item.Roles.Contains("admin"))
+                        {
+                            <a class="btn btn-outline-danger" asp-action="DeleteUser" asp-controller="Account" asp-route-userName="@item.Visitor.Email">Видалити</a>
+                        }
                     </div>
                 </div>
             </div>

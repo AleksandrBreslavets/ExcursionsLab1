@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExcursionsDomain.Model;
 using ExcursionsInfrastructure;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ExcursionsInfrastructure.Controllers
 {
+    [Authorize(Roles ="admin")]
     public class CitiesController : Controller
     {
         private readonly ExcursionsDbContext _context;

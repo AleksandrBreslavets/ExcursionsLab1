@@ -6,9 +6,12 @@
 
 <h1>Категорії</h1>
 
-<p>
-    <a asp-action="Create">Додати категорію</a>
-</p>
+@if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
+{
+    <p>
+        <a asp-action="Create">Додати категорію</a>
+    </p>
+}
 
 @if (Model.Any())
 {
@@ -22,8 +25,11 @@
 
                     <div class="card-cat-btns">
                         <a class="btn btn-outline-info" asp-action="Details" asp-route-id="@item.Id">Докладніше</a>
-                        <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@item.Id">Редагувати</a>
-                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
+                        {
+                            <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@item.Id">Редагувати</a>
+                            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+                        }
                     </div>
                 </div>
             </div>

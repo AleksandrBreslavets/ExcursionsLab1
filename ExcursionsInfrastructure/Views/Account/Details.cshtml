@@ -1,0 +1,84 @@
+﻿@model ExcursionsDomain.Model.Visitor
+@using ExcursionsDomain.Model
+@{
+    ViewData["Title"] = "Особистий кабінет";
+    var user = User.Identity.Name;
+}
+
+<h1 class="display-4">Особистий кабінет</h1>
+<hr />
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+    </dl>
+</div>
+<hr />
+
+@if (!User.IsInRole("admin"))
+{
+    @if (Model.Excursions.Any())
+    {
+        <div>
+            <h4 class="cat-details-header">Ваші екскурсії:</h4>
+            <div class="card-container">
+                @foreach (var item in Model.Excursions.OrderBy(e => e.Date))
+                {
+                    <div class="card border-success card-excur">
+                        <div class="card-body card_inner">
+                            <div>
+                                <h4 class="card-title" style="text-align: center;">@item.Name.ToUpper()</h4>
+                                <hr />
+                                <div class="card-head">
+                                    <p class="card-text">@item.Date.ToString("dd.MM.yyyy") о @item.Date.ToString("HH:mm")</p>
+                                    <p class="card-text">@Html.DisplayFor(modelItem => item.Price) грн/чол</p>
+                                </div>
+                                <p class="card-text" style="margin-bottom: 2px">МІСЦЯ ПРОВЕДЕННЯ:</p>
+                                <p class="card-text">@Html.Raw(string.Join(", ", item.Places.Select(p => p.Name)))</p>
+
+                            </div>
+
+                            <div>
+                                <p class="card-text duration"> Тривалість: @item.Duration год</p>
+                                @if (((IEnumerable<Excursion>)Model.Excursions).Any(e => e.Id == item.Id))
+                                {
+                                    @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-danger card-btn card-btn-main" })
+                                }
+                                @Html.ActionLink("Докладніше", "Details", "Excursions", new { id = item.Id }, new { @class = "btn btn-outline-info card-btn" })
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (!Model.Excursions.Any())
+    {
+        <h5>Ви не записані на жодну екскурсію.</h5>
+    }
+}
+
+<div class="cat-details-btns">
+    <a class="btn btn-outline-info" asp-action="UpdateUser">Редагувати профіль</a>
+    <a class="btn btn-outline-info" asp-action="ChangePassword">Змінити пароль</a>
+    <a class="btn btn-outline-danger" asp-action="DeleteUser" asp-route-userName="@user">Видалити профіль</a>
+</div>
+

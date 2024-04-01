@@ -16,39 +16,59 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-toggleable-sm bg-dark" data-bs-theme="dark">
+        <nav class="navbar navbar-expand-xl navbar-toggleable-sm bg-dark" data-bs-theme="dark">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Навколо Світу</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+                
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Головна</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Excursions" asp-action="Index">Екскурсії</a>
-                        </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Categories" asp-action="Index">Категорії</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Cities" asp-action="Index">Міста</a>
+                            <a class="nav-link" asp-area="" asp-controller="Excursions" asp-action="Index">Екскурсії</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Countries" asp-action="Index">Країни</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Places" asp-action="Index">Місця проведення</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Visitors" asp-action="Index">Користувачі</a>
-                        </li>
-
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Cities" asp-action="Index">Міста</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Countries" asp-action="Index">Країни</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Places" asp-action="Index">Місця проведення</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Visitors" asp-action="Index">Користувачі</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-controller="Roles" asp-action="Index">Ролі користувачів</a>
+                            </li>
+                        }
                     </ul>
                 </div>
+                <div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="header_user">
+                            <p style="margin:0px;">Вітаємо, <a asp-controller="Account" asp-action="Details">@User.Identity.Name!</a></p>
+                            <form method="post" asp-controller="Account" asp-action="Logout">
+                                <input class="btn btn-outline-info" type="submit" value="Вихід" />
+                            </form>
+                        </div>
+                    }
+                    else{
+                        <div class="header_user">
+                            <a class="btn btn-outline-info" asp-controller="Account" asp-action="Register">Реєстація</a>
+                            <a class="btn btn-outline-info" asp-controller="Account" asp-action="Login">Вхід</a>
+                        </div>
+                    }
+                </div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
             </div>
         </nav>
     </header>

@@ -180,6 +180,7 @@ namespace ExcursionsInfrastructure.Services
             {
                 if(value < 0)
                 {
+                    _isValid = false;
                     _validationErrorStr += $"Числове значення в категорії: {wName}, в рядку: {rowNumber}, клітинка: {cellNumb} має бути додатнім.\n";
                     return 0;
                 }
@@ -218,6 +219,7 @@ namespace ExcursionsInfrastructure.Services
             {
                 if (value < 0.01)
                 {
+                    _isValid = false;
                     _validationErrorStr += $"Ціна екскурсії в категорії: {wName}, в рядку: {rowNumber} має бути додатньою.\n";
                     return 0;
                 }

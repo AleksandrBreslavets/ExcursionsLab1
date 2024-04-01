@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+@{
+    ViewData["Title"] = "Ролі користувачів";
+}
+
+<h2>Список ролей</h2>
+
+<p>
+    <a asp-action="Create">Додати роль</a>
+</p>
+
+@if (Model.Any())
+{
+    <div class="cat-container">
+        @foreach (var item in Model)
+        {
+            <div class="card border-dark" style="width:100%">
+                <div class="card-body card-cat-inner">
+
+                    <h4 class="card-title">@item.Name</h4>
+
+                    <div class="card-cat-btns">
+                        @if (!((item.Name == "admin") || (item.Name == "user")))
+                        {
+                            <a class="btn btn-outline-warning" asp-action="Update" asp-route-roleId="@item.Id">Редагувати</a>
+                            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-roleId="@item.Id">Видалити</a>
+                        }
+  
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <h5>Ролей немає.</h5>
+}
+
+<a style="margin-top:40px;" class="btn btn-outline-info" asp-controller="Visitors" asp-action="Index">До всіх користувачів</a>

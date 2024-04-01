@@ -7,25 +7,58 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ExcursionsDomain.Model;
 using ExcursionsInfrastructure;
+using Microsoft.AspNetCore.Authorization;
+using ExcursionsInfrastructure.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ExcursionsInfrastructure.Controllers
 {
     public class VisitorsController : Controller
     {
         private readonly ExcursionsDbContext _context;
+        private RoleManager<IdentityRole> _roleManager;
+        private UserManager<User> _userManager;
 
-        public VisitorsController(ExcursionsDbContext context)
+        public VisitorsController(ExcursionsDbContext context, RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
         {
             _context = context;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
+
         // GET: Visitors
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Visitors.ToListAsync());
+            var usersWithRoles =  _userManager.Users.Select(user => new
+            {
+                User = user.UserName,
+                UserId=user.Id,
+                Roles = _userManager.GetRolesAsync(user).Result
+            }).ToList();
+
+            var visitorsWithRoles = _context.Visitors
+                .AsEnumerable() 
+                .Join(
+                    usersWithRoles,
+                    visitor => visitor.Email,
+                    other => other.User,
+                    (visitor, other) => new VisitorWithRoles
+                    {
+                        Visitor = visitor,
+                        UserId=other.UserId,
+                        Roles = other.Roles
+                    }
+                )
+                .ToList();
+
+            return View(visitorsWithRoles);
         }
 
         // GET: Visitors/Details/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -42,113 +75,11 @@ namespace ExcursionsInfrastructure.Controllers
                 return NotFound();
             }
 
-            return View(visitor);
-        }
+            var user = await _userManager.FindByNameAsync(visitor.Email);
+            var roles = await _userManager.GetRolesAsync(user);
 
-        // GET: Visitors/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Visitors/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,Email,PhoneNumber,Id")] Visitor visitor)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(visitor);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(visitor);
-        }
-
-        // GET: Visitors/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var visitor = await _context.Visitors.FindAsync(id);
-            if (visitor == null)
-            {
-                return NotFound();
-            }
-            return View(visitor);
-        }
-
-        // POST: Visitors/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Name,Email,PhoneNumber,Id")] Visitor visitor)
-        {
-            if (id != visitor.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(visitor);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VisitorExists(visitor.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(visitor);
-        }
-
-        // GET: Visitors/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var visitor = await _context.Visitors
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (visitor == null)
-            {
-                return NotFound();
-            }
-
-            return View(visitor);
-        }
-
-        // POST: Visitors/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var visitor = await _context.Visitors.FindAsync(id);
-            if (visitor != null)
-            {
-                _context.Visitors.Remove(visitor);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var visitorsWithRoles = new VisitorWithRoles { Visitor = visitor, Roles=roles, UserId=user.Id };
+            return View(visitorsWithRoles);
         }
 
         private bool VisitorExists(int id)
@@ -156,10 +87,10 @@ namespace ExcursionsInfrastructure.Controllers
             return _context.Visitors.Any(e => e.Id == id);
         }
 
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> AddExcursion(int excur_id)
         {
-            int visitor_id = 3;
-            var visitor = _context.Visitors.Include(v=>v.Excursions).FirstOrDefault(v => v.Id == visitor_id);
+            var visitor = _context.Visitors.Include(v=>v.Excursions).FirstOrDefault(v => v.Email == User.Identity.Name);
             
 
             if (visitor == null)
@@ -180,10 +111,10 @@ namespace ExcursionsInfrastructure.Controllers
             return RedirectToAction("Index", "Excursions");
         }
 
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> DeleteExcursion(int excur_id)
         {
-            int visitor_id = 3;
-            var visitor = _context.Visitors.Include(v => v.Excursions).FirstOrDefault(v => v.Id == visitor_id);
+            var visitor = _context.Visitors.Include(v => v.Excursions).FirstOrDefault(v => v.Email == User.Identity.Name);
 
 
             if (visitor == null)

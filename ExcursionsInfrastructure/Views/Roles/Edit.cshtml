@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model ExcursionsInfrastructure.ViewModel.ChangeRoleViewModel
+
+@{
+    ViewData["Title"] = "Зміна ролей користувача";
+}
+
+<h1>Зміна ролей для користувача @Model.UserEmail</h1>
+<hr />
+
+<form asp-action="Edit" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" name="userId" value="@Model.UserId" />
+    <div class="form-group">
+        @foreach (IdentityRole role in Model.AllRoles)
+        {
+            <input type="checkbox" name="roles" value="@role.Name"
+            @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") />
+
+            @role.Name <br />
+        }
+    </div>
+    <div class="form-group cat-details-btns filter-btn-box">
+        <button type="submit" class="btn btn-outline-success">Зберегти</button>
+        <a class="btn btn-outline-info" asp-controller="Visitors" asp-action="Index">До всіх користувачів</a>
+    </div>
+</form>
+

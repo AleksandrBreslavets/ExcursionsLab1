@@ -13,11 +13,12 @@
 
 <h1>Екскурсії та тури</h1>
 
-<p>
-    <a asp-action="Create">Додати екскурсію</a>
-</p>
-
-
+@if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
+{
+    <p>
+        <a asp-action="Create">Додати екскурсію</a>
+    </p>
+}
 
 <form asp-action="Filter" class="form-filter">
     <div>
@@ -110,8 +111,12 @@
    <div class="cat-details-btns filter-btn-box">
         <button class="btn btn-outline-info" type="submit">Пошук</button>
         <button class="btn btn-outline-danger" type="button" onclick="clearSearch();">Очистити</button>
-        <a class="btn btn-outline-info" type="=submit" asp-area="" asp-controller="Excursions" asp-action="Import">Завантажити з файлу</a>
+        @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
+        {
+            <a class="btn btn-outline-info" type="=submit" asp-area="" asp-controller="Excursions" asp-action="Import">Завантажити з файлу</a>
+        }
         <a class="btn btn-outline-info" type="=submit" asp-area="" asp-controller="Excursions" asp-action="Export">Експортувати у файл</a>
+        
    </div>
     
 </form>
@@ -136,22 +141,28 @@
                     
                     <div>
                         <p class="card-text duration"> Тривалість: @item.Duration год</p>
-                        @if (item.Visitors.Count() == item.MaxPeopleAmount && !((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                        @if(User.Identity.IsAuthenticated && !User.IsInRole("admin"))
                         {
-                            <button class="btn btn-outline-danger disabled card-btn card-btn-main">Немає вільних місць...</button>
+                            @if (item.Visitors.Count() == item.MaxPeopleAmount && !((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                            {
+                                <button class="btn btn-outline-danger disabled card-btn card-btn-main">Немає вільних місць...</button>
+                            }
+                            @if (((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
+                            {
+                                @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-danger card-btn card-btn-main" })
+                            }
+                            @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id) && item.Visitors.Count() != item.MaxPeopleAmount)
+                            {
+                                @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-info card-btn card-btn-main" })
+                            }
                         }
-                        @if (((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id))
-                        {
-                            @Html.ActionLink("Скасувати запис на екскурсію", "DeleteExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-danger card-btn card-btn-main" })
-                        }
-                        @if (!((IEnumerable<Excursion>)ViewBag.Visitor.Excursions).Any(e => e.Id == item.Id) && item.Visitors.Count() != item.MaxPeopleAmount)
-                        {
-                            @Html.ActionLink("Записатися на екскурсію", "AddExcursion", "Visitors", new { excur_id = item.Id }, new { @class = "btn btn-outline-info card-btn card-btn-main" })
-                        }
-
                         <a class="btn btn-outline-info card-btn" asp-action="Details" asp-route-id="@item.Id">Докладніше</a>
-                        <a class="btn btn-outline-warning card-btn" asp-action="Edit"  asp-route-id="@item.Id">Редагувати</a>
-                        <a class="btn btn-outline-danger" asp-action="Delete" style="width:100%" asp-route-id="@item.Id">Видалити</a>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("admin"))
+                        {
+                            <a class="btn btn-outline-warning card-btn" asp-action="Edit"  asp-route-id="@item.Id">Редагувати</a>
+                            <a class="btn btn-outline-danger" asp-action="Delete" style="width:100%" asp-route-id="@item.Id">Видалити</a>
+                        }
+                        
                     </div>
                 </div>
             </div>

@@ -6,7 +6,7 @@ namespace ExcursionsDomain.Model;
 
 public partial class Visitor:Entity
 {
-    [Required(ErrorMessage = "Ім'я є обов'язковою!")]
+    [Required(ErrorMessage = "Ім'я є обов'язковим!")]
     [MaxLength(50, ErrorMessage = "Введіть коротше ім'я")]
     [Display(Name = "Ім'я")]
     public string Name { get; set; } = null!;

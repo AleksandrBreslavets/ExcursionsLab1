@@ -8,9 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using ExcursionsDomain.Model;
 using ExcursionsInfrastructure;
 using ExcursionsInfrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using ExcursionsInfrastructure.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace ExcursionsInfrastructure.Controllers
 {
+    
     public class CategoriesController : Controller
     {
         private readonly ExcursionsDbContext _context;
@@ -48,13 +53,13 @@ namespace ExcursionsInfrastructure.Controllers
                  .ThenInclude(e=>e.Visitors)
                  .ToListAsync();
 
-            ViewData["Visitor"] = _context.Visitors.Include(v => v.Excursions).FirstOrDefault(v => v.Id == 3);
+            ViewData["Visitor"] = _context.Visitors.Include(v => v.Excursions).FirstOrDefault(v => v.Email==User.Identity.Name);
 
             return View(category);
-            //return RedirectToAction("Index", "Excursions", new {id=category.Id});
         }
 
         // GET: Categories/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
@@ -65,6 +70,7 @@ namespace ExcursionsInfrastructure.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("Name,Id")] Category category)
         {
             if (ModelState.IsValid)
@@ -77,6 +83,7 @@ namespace ExcursionsInfrastructure.Controllers
         }
 
         // GET: Categories/Edit/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -97,13 +104,13 @@ namespace ExcursionsInfrastructure.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Name,Id")] Category category)
         {
             if (id != category.Id)
             {
                 return NotFound();
             }
-
             if (ModelState.IsValid)
             {
                 try
@@ -128,6 +135,7 @@ namespace ExcursionsInfrastructure.Controllers
         }
 
         // GET: Categories/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -148,6 +156,7 @@ namespace ExcursionsInfrastructure.Controllers
         // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var category = await _context.Categories.FindAsync(id);
